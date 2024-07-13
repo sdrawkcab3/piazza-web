@@ -12,7 +12,7 @@ class UsersController < ApplicationController
 
           redirect_to root_path,
               status: :see_other,
-              flash: { success: t(".welcome"), name: @user.name }
+              flash: { success: t(".welcome", name: @user.name) }
       else
           render :new, status: :unprocessable_entity
       end
