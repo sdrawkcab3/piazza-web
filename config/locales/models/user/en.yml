@@ -4,5 +4,10 @@ en:
       models:
         user:
           attributes:
+            email:
+              taken: Email has already been taken
             password:
-              too_short: must be at least 8 characters long
+              too_short: "Password must be at least 8 characters long"
+              password_complexity: "Password must include at least one lowercase letter, one uppercase letter, and one digit."
+            password_confirmation:
+              confirmation: Passwords do not match

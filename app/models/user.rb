@@ -6,18 +6,36 @@ class User < ApplicationRecord
 
     has_many :memberships, dependent: :destroy
     has_many :organizations, through: :memberships  
+    has_many :app_sessions
 
     before_validation :strip_extraneous_spaces
 
     has_secure_password
-    validates :password,
-        presence: true,
+    validates :password, presence: true,
         length: { minimum: 8 }
+
+    validates :password_confirmation, presence: true
+
+    validate :password_complexity
+
+    def self.create_app_session(email:, password:)
+        return nil unless user = User.find_by(email: email.downcase)
+
+        user.app_sessions.create if user.authenticate(password)
+    end
 
     private
 
     def strip_extraneous_spaces
         self.name = self.name&.strip
         self.email = self.email&.strip
+    end
+
+    def password_complexity
+        if password.present? and !password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{3,}$/)
+            errors.add :password, 
+                I18n.t("activerecord.errors.models.user.attributes.password.password_complexity", 
+                field: I18n.t("activerecord.models.attributes.user.password"))
+        end
     end
 end

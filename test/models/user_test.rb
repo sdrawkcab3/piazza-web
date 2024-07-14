@@ -2,12 +2,14 @@ require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
   test "requires a name" do
-    @user = User.new(
-      name: "", 
-      email: "johndoe@example.com",
-      password: "password"
+    @user = User.new( 
+      name: "",
+      email: "john1doe@example.com",
+      password: "Password11",
+      password_confirmation: "Password11"
     )
     assert_not @user.valid?
+
     @user.name = "John"
     assert @user.valid?
   end
@@ -15,30 +17,30 @@ class UserTest < ActiveSupport::TestCase
   test "requires a valid email" do
     @user = User.new(
       name: "John", 
-      email: "",
-      password: "password"
+      email: "invalid",
+      password: "Password11",
+      password_confirmation: "Password11"
     )
     assert_not @user.valid?
 
-    @user.email = "invalid"
-    assert_not @user.valid?
-
-    @user.email = "johndoe@example.com"
+    @user.email = "john1doe@example.com"
     assert @user.valid?
   end
 
   test "requires a unique email" do
     @existing_user = User.create(
       name: "John", 
-      email: "jd@example.com",
-      password: "password"
+      email: "jd5@example.com",
+      password: "Password11",
+      password_confirmation: "Password11"
     )
     assert @existing_user.persisted?
 
     @user = User.new(
       name: "Jon", 
-      email: "jd@example.com",
-      password: "password"
+      email: "jd5@example.com",
+      password: "Password11",
+      password_confirmation: "Password11"
     )
     assert_not @user.valid?
   end
@@ -47,7 +49,8 @@ class UserTest < ActiveSupport::TestCase
     @user = User.create(
       name: " John",
       email: " johndoe@example.com ",
-      password: "password"
+      password: "Password11",
+      password_confirmation: "Password11"
     )
     assert_equal "John", @user.name
     assert_equal "johndoe@example.com", @user.email
@@ -57,11 +60,13 @@ class UserTest < ActiveSupport::TestCase
     @user = User.new(
       name: "Jane",
       email: "janedoe@example.com",
-      password: ""
+      password: "La2",
+      password_confirmation: "La2"
     )
     assert_not @user.valid?
 
-    @user.password = "password"
+    @user.password = "Password11"
+    @user.password_confirmation = "Password11"
     assert @user.valid?
 
     max_length =
@@ -69,4 +74,32 @@ class UserTest < ActiveSupport::TestCase
     @user.password = "a" * (max_length + 1)
     assert_not @user.valid?
   end
+
+  test "can create a session with email and correct password" do
+    @app_session = User.create_app_session(
+      email: "jerry@example.com",
+      password: "Password11"
+    )
+    assert_not_nil @app_session
+    assert_not_nil @app_session.token
+  end
+
+  test "cannot create a session with email and incorrect password" do
+    @app_session = User.create_app_session(
+      email: "jerry@example.com",
+      password: "WRONGPASS1"
+    )
+
+    assert_nil @app_session
+  end
+
+  test "creating a session with non existant email returns nil" do
+    @app_session = User.create_app_session(
+      email: "whoami@example.com",
+      password: "WRONGPASS1"
+    )
+
+    assert_nil @app_session
+  end
+  
 end
