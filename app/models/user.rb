@@ -19,9 +19,10 @@ class User < ApplicationRecord
     validate :password_complexity
 
     def self.create_app_session(email:, password:)
-        return nil unless user = User.find_by(email: email.downcase)
+        user = User.find_by(email: email.downcase)
+        return nil unless user&.authenticate(password)
 
-        user.app_sessions.create if user.authenticate(password)
+        user.app_sessions.create
     end
 
     private
