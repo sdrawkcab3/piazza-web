@@ -25,6 +25,12 @@ class User < ApplicationRecord
         user.app_sessions.create
     end
 
+    def authenticate_app_session(app_session_id, token)
+        app_sessions.find(app_session_id).authenticate_token(token)
+    rescue ActiveRecord::RecordNotFound
+        nil
+    end
+
     private
 
     def strip_extraneous_spaces
