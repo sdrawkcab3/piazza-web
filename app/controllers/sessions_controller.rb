@@ -21,7 +21,9 @@ class SessionsController < ApplicationController
 
     private
         def login_params
-            @login_params ||=
+            # The `||=` (conditional assignment) operator only assigns a value if variable is nil or false, otherwise it short-circuits to the current value
+            # This technique is called memoization, which is a programming technique to reduce the complexity of repeated operations within a routine.
+            @login_params ||= 
                 params.require(:user).permit(:email, :password)
         end
 end
