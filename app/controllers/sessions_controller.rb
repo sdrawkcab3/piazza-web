@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
         )
 
         if @app_session
-            log_in(@app_session)
+            log_in(@app_session, params[:remember_me])
 
             flash[:success] = t(".success")
             redirect_to root_path, status: :see_other
@@ -33,6 +33,6 @@ class SessionsController < ApplicationController
             # The `||=` (conditional assignment) operator only assigns a value if variable is nil or false, otherwise it short-circuits to the current value
             # This technique is called memoization, which is a programming technique to reduce the complexity of repeated operations within a routine.
             @login_params ||= 
-                params.require(:user).permit(:email, :password)
+                params.require(:user).permit(:email, :password, :remember_me)
         end
 end

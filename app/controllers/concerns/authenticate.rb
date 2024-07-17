@@ -25,14 +25,19 @@ module Authenticate
             Current.user.present?
         end
 
-        def log_in(app_session)
-            cookies.encrypted.permanent[:app_session] = {
-                value: app_session.to_h
-            }
+        def log_in(app_session, remember_me)
+            if remember_me == '1'
+                cookies.encrypted.permanent[:app_session] = {
+                    value: app_session.to_h
+                }
+            else
+                session[:app_session] = app_session.to_h
+            end
         end
 
         def log_out
             Current.app_session&.destroy
+            reset_session
         end
 
     private
@@ -48,7 +53,11 @@ module Authenticate
         end
 
         def authenticate_using_cookie
-            app_session = cookies.encrypted[:app_session]
+            if cookies.encrypted[:app_session]
+                app_session = cookies.encrypted[:app_session]
+            elsif session[:app_session]
+                app_session = session[:app_session]
+            end
             authenticate_using app_session&.with_indifferent_access
         end
 
