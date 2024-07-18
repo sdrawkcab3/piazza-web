@@ -11,7 +11,7 @@ class UsersController < ApplicationController
       if @user.save
           @organization = Organization.create(members: [@user])
           @app_session = @user.app_sessions.create
-          log_in(@app_session)
+          log_in(@app_session, nil)
 
           redirect_to root_path,
               status: :see_other,
