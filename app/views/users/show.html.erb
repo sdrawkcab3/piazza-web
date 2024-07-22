@@ -24,9 +24,13 @@
 
                 <%= form.submit t(".save_profile"),
                       class: "button is-primary is-align-self-flex-end mb-3 mt-3" %>
+                <%= render "shared/flashes" if turbo_frame_request? %>
               <% end %>
           </layout-column>
       </layout-columns>
+      <%= turbo_stream.update :current_user_name do %>
+        <%= Current.user.name %>
+      <% end %>
   <% end %>
 
   <%= turbo_frame_tag :change_password do %>
@@ -38,7 +42,7 @@
 
               <%= form_with(
                   model: @user,
-                  url: profile_path,
+                  url: users_change_password_path,
                   class: "is-flex is-flex-direction-column"
                   ) do |form| %>
                 <div class="block">
@@ -53,6 +57,8 @@
 
                 <%= form.submit t(".change_password_button"),
                       class: "button is-primary is-align-self-flex-end mb-3 mt-3" %>
+                <%= render "shared/flashes" if turbo_frame_request? %>
+
               <% end %>
           </layout-column>
       </layout-columns>

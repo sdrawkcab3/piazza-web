@@ -9,4 +9,8 @@ Rails.application.routes.draw do
   delete "logout",  to: "sessions#destroy"
 
   resource :profile, only: [:show, :update], controller: "users"
+
+  namespace :users do
+    patch "change_password", to: "passwords#update"
+  end
 end
