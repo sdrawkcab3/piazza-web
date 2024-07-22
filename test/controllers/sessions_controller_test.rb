@@ -9,7 +9,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_difference("@user.app_sessions.count", 1) {
       log_in(@user)
     }
-    assert_not_empty cookies[:app_session]
+    assert_not_empty session[:app_session]
     assert_redirected_to root_path
   end
 

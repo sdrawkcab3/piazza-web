@@ -17,7 +17,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to root_path
-    assert_not_empty cookies[:app_session]
+    assert_not_empty session[:app_session]
     
     follow_redirect!
     assert_select ".notification.is-success",
@@ -70,6 +70,20 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
       I18n.t(
         'activerecord.errors.models.user.attributes.password_confirmation.confirmation'
       )
+  end
+
+  test "can update user details" do
+    @user = users(:jerry)
+    log_in @user
+
+    patch profile_path, params: {
+      user: {
+        name: "Jerry Seinfeld"
+      }
+    }
+
+    assert_redirected_to profile_path
+    assert_equal "Jerry Seinfeld", @user.reload.name
   end
 
 end

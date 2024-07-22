@@ -10,7 +10,7 @@ class User < ApplicationRecord
     has_many :organizations, through: :memberships  
 
     before_validation :strip_extraneous_spaces
-    validates :password_confirmation, presence: true
+    validates :password_confirmation, on: [:create], presence: true
     validate :password_complexity
 
     private
